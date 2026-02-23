@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal - UI Prototype</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --dark-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7fe;
+            color: #2b2d42;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #ffffff;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #edf2f9;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .sidebar-header i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        ul.components {
+            padding: 20px 0;
+        }
+
+        ul.components li {
+            padding: 5px 20px;
+        }
+
+        ul.components li a {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6c757d;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        ul.components li a i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        ul.components li a:hover, ul.components li.active a {
+            color: #ffffff;
+            background: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Main Content */
+        #content {
+            margin-left: var(--sidebar-width);
+            padding: 20px 40px;
+            transition: all 0.3s;
+        }
+
+        /* Navbar */
+        .top-navbar {
+            background: #ffffff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.03);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            background: #f4f7fe;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            margin-left: 10px;
+            width: 100%;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Cards & Widgets */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .icon-blue { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); }
+        .icon-green { background: rgba(76, 201, 240, 0.1); color: var(--success-color); }
+        .icon-pink { background: rgba(247, 37, 133, 0.1); color: var(--danger-color); }
+        .icon-purple { background: rgba(63, 55, 201, 0.1); color: var(--secondary-color); }
+
+        .stat-details h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .stat-details p {
+            margin: 0;
+            color: #8f9bba;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Data Tables / Content Cards */
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.03);
+            margin-bottom: 25px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .content-header h5 {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .table th {
+            color: #8f9bba;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #edf2f9;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: var(--dark-color);
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 1px solid #edf2f9;
+            padding: 15px 10px;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: rgba(76, 201, 240, 0.1); color: var(--success-color); }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-rejected { background: rgba(247, 37, 133, 0.1); color: var(--danger-color); }
+
+        /* Profile Section */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            height: 150px;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            position: absolute;
+            bottom: -60px;
+            left: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-body {
+            padding: 80px 30px 30px;
+        }
+
+        .skill-tag {
+            background: #f4f7fe;
+            color: var(--primary-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* Section Toggling */
+        .ui-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .ui-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #eef2ff;
+            color: var(--secondary-color);
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .flow-step {
+            border: 1px solid #e9edf7;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            background: #fff;
+        }
+
+        .flow-step h6 {
+            margin: 0 0 8px;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .flow-step p {
+            margin: 0;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #9aa7c7;
+            margin: 6px 0;
+            font-size: 16px;
+        }
+
+        .code-lite {
+            background: #111827;
+            color: #d1d5db;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .role-card {
+            border: 1px solid #edf2f9;
+            border-radius: 16px;
+            padding: 18px;
+            height: 100%;
+            background: linear-gradient(180deg, #fff, #fbfcff);
+        }
+
+        .role-card h6 {
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .line-title {
+            font-size: 12px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #8f9bba;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .notif-pill {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 14px;
+        }
+
+        .notif-follow { background: #dbeafe; color: #1e40af; }
+        .notif-post { background: #e0f2fe; color: #0c4a6e; }
+        .notif-like { background: #dcfce7; color: #166534; }
+        .notif-comment { background: #fee2e2; color: #991b1b; }
+
+        .state-pending { color: #9a6700; background: #fff8db; }
+        .state-sent { color: #0a7d4f; background: #e8fff3; }
+        .state-failed { color: #a12a2a; background: #ffe9e9; }
+
+        .grid-note {
+            border-left: 3px solid var(--primary-color);
+            background: #f8faff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #4a5675;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-briefcase"></i>
+            <h4>JobPortal</h4>
+        </div>
+        <ul class="list-unstyled components">
+            <li class="active" onclick="switchTab('dashboard', this)">
+                <a href="#"><i class="fa-solid fa-grid-2"></i> Dashboard</a>
+            </li>
+            <li onclick="switchTab('system-flow', this)">
+                <a href="#"><i class="fa-solid fa-diagram-project"></i> End-to-End Flow</a>
+            </li>
+            <li onclick="switchTab('jobs', this)">
+                <a href="#"><i class="fa-solid fa-layer-group"></i> Manage Jobs</a>
+            </li>
+            <li onclick="switchTab('users', this)">
+                <a href="#"><i class="fa-solid fa-users"></i> Users & Companies</a>
+            </li>
+            <li onclick="switchTab('social-flow', this)">
+                <a href="#"><i class="fa-solid fa-share-nodes"></i> Social Flow</a>
+            </li>
+            <li onclick="switchTab('notifications-view', this)">
+                <a href="#"><i class="fa-solid fa-bell"></i> Notifications</a>
+            </li>
+            <li onclick="switchTab('seeker-profile', this)">
+                <a href="#"><i class="fa-solid fa-user"></i> Seeker View</a>
+            </li>
+            <li onclick="switchTab('company-profile', this)">
+                <a href="#"><i class="fa-solid fa-building"></i> Company View</a>
+            </li>
+            <li onclick="switchTab('model-map', this)">
+                <a href="#"><i class="fa-solid fa-database"></i> Model & API Map</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-search text-muted"></i>
+                <input type="text" placeholder="Search across portal...">
+            </div>
+            <div class="user-profile">
+                <button class="btn btn-light position-relative rounded-circle p-2 border-0" style="background: #f4f7fe;">
+                    <i class="fa-solid fa-bell text-muted"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                </button>
+                <div class="text-end me-2 d-none d-md-block">
+                    <h6 class="mb-0 fw-bold" style="font-size: 14px;">Admin User</h6>
+                    <small class="text-muted" style="font-size: 12px;">System Administrator</small>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="User">
+            </div>
+        </div>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="ui-section active">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Total Jobs</p>
+                            <h3>1,245</h3>
+                        </div>
+                        <div class="stat-icon icon-blue">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Active Seekers</p>
+                            <h3>8,532</h3>
+                        </div>
+                        <div class="stat-icon icon-green">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Registered Companies</p>
+                            <h3>426</h3>
+                        </div>
+                        <div class="stat-icon icon-purple">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-details">
+                            <p>Pending Approvals</p>
+                            <h3>24</h3>
+                        </div>
+                        <div class="stat-icon icon-pink">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="content-card h-100">
+                        <div class="content-header">
+                            <h5>Recent Job Postings</h5>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3">View All</button>
+                        </div>
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Senior React Developer</strong></td>
+                                    <td>Acme Corp</td>
+                                    <td>Remote</td>
+                                    <td>Full-Time</td>
+                                    <td><span class="badge-status badge-active">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Backend Node.js Engineer</strong></td>
+                                    <td>TechFlow Inc.</td>
+                                    <td>New York, NY</td>
+                                    <td>Contract</td>
+                                    <td><span class="badge-status badge-pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>UI/UX Designer</strong></td>
+                                    <td>Creative Studio</td>
+                                    <td>San Francisco, CA</td>
+                                    <td>Full-Time</td>
+                                    <td><span class="badge-status badge-active">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>DevOps Specialist</strong></td>
+                                    <td>CloudGen</td>
+                                    <td>Remote</td>
+                                    <td>Full-Time</td>
+                                    <td><span class="badge-status badge-active">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="content-header">
+                            <h5>Recent Signups</h5>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://ui-avatars.com/api/?name=Sarah+Jen&background=random" class="rounded-circle me-3" width="45">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Sarah Jenkins</h6>
+                                <small class="text-muted">Job Seeker • Joined 2h ago</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://ui-avatars.com/api/?name=Data+Systems&background=random" class="rounded-circle me-3" width="45">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Data Systems LLC</h6>
+                                <small class="text-muted">Company • Joined 5h ago</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://ui-avatars.com/api/?name=Mike+Ross&background=random" class="rounded-circle me-3" width="45">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Mike Ross</h6>
+                                <small class="text-muted">Job Seeker • Joined 1d ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- END-TO-END FLOW SECTION -->
+        <div id="system-flow" class="ui-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h5>Complete Project Flow (Auth -> Approval -> Social -> Notification)</h5>
+                            <span class="badge bg-primary-subtle text-primary">Single Page Working Model</span>
+                        </div>
+                        <div class="grid-note mb-3">
+                            Admin account is seeded automatically on server startup using `seedAdminUser()` so login and moderation are always available.
+                        </div>
+                        <div>
+                            <span class="chip"><i class="fa-solid fa-user-shield"></i> Admin seeded login</span>
+                            <span class="chip"><i class="fa-solid fa-list-check"></i> Job approval lifecycle</span>
+                            <span class="chip"><i class="fa-solid fa-user-plus"></i> Follow notifications</span>
+                            <span class="chip"><i class="fa-solid fa-square-plus"></i> New post fanout</span>
+                            <span class="chip"><i class="fa-solid fa-clock-rotate-left"></i> Cron delivery queue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 mb-3">
+                    <div class="role-card">
+                        <h6><i class="fa-solid fa-user me-2 text-primary"></i>Seeker Role Flow</h6>
+                        <div class="flow-step">
+                            <h6>1. Register / Login</h6>
+                            <p>JWT issued with role `SEEKER`.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>2. Build profile + apply jobs</h6>
+                            <p>Resume upload, application submission, and application tracking.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>3. Social actions</h6>
+                            <p>Follow users, create posts, like and comment. These generate notification records.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-3">
+                    <div class="role-card">
+                        <h6><i class="fa-solid fa-building me-2 text-secondary"></i>Company Role Flow</h6>
+                        <div class="flow-step">
+                            <h6>1. Register / Login</h6>
+                            <p>JWT issued with role `COMPANY`.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>2. Post new job</h6>
+                            <p>New jobs remain pending until admin approval.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>3. Manage applications</h6>
+                            <p>Update application status and review candidate profiles.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-3">
+                    <div class="role-card">
+                        <h6><i class="fa-solid fa-user-shield me-2 text-danger"></i>Admin Role Flow</h6>
+                        <div class="flow-step">
+                            <h6>1. Seeded admin login</h6>
+                            <p>Comes from env: `ADMIN_EMAIL` + `ADMIN_PASSWORD`.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>2. Approvals + moderation</h6>
+                            <p>Approve/reject jobs, block/unblock users, filter users by role.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>3. Observe system health</h6>
+                            <p>Monitor pending queue and notification delivery outcomes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="content-card">
+                        <div class="line-title">Admin Seeder Config</div>
+                        <div class="code-lite">ADMIN_EMAIL="admin@jobportal.com"
+ADMIN_PASSWORD="Admin@123"
+ADMIN_FORCE_RESET_PASSWORD="false"
+
+npm run seed:admin
+# Also runs automatically on server boot</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="content-card">
+                        <div class="line-title">Approval Pipeline Snapshot</div>
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Actor</th>
+                                    <th>State</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Company posts job</td>
+                                    <td>Company</td>
+                                    <td><span class="badge-status badge-pending">PENDING</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Admin reviews listing</td>
+                                    <td>Admin</td>
+                                    <td><span class="badge bg-warning-subtle text-warning">UNDER REVIEW</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Job approved/rejected</td>
+                                    <td>Admin</td>
+                                    <td><span class="badge-status badge-active">APPROVED</span> / <span class="badge-status badge-rejected">REJECTED</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOBS SECTION (Admin / Company View) -->
+        <div id="jobs" class="ui-section">
+            <div class="content-card">
+                <div class="content-header">
+                    <h5>All Jobs Database</h5>
+                    <button class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="fa-solid fa-plus me-2"></i> Post New Job</button>
+                </div>
+                <table class="table table-hover table-borderless mt-3">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Type</th>
+                            <th>Exp. Level</th>
+                            <th>Salary Range</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><small class="text-muted">#J-8423</small></td>
+                            <td><strong>Frontend Developer</strong></td>
+                            <td>Acme Corp</td>
+                            <td>Full-Time</td>
+                            <td>Mid-Level</td>
+                            <td>$80k - $100k</td>
+                            <td><span class="badge-status badge-active">Approved</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-light"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-sm btn-light text-danger"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><small class="text-muted">#J-8424</small></td>
+                            <td><strong>Marketing Manager</strong></td>
+                            <td>Global Reach</td>
+                            <td>Contract</td>
+                            <td>Senior</td>
+                            <td>$100k - $120k</td>
+                            <td><span class="badge-status badge-pending">Pending Review</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fa-solid fa-xmark"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- USERS SECTION -->
+        <div id="users" class="ui-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h5>User Directory</h5>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-select-sm border-0 bg-light rounded-pill px-3">
+                                    <option>All Roles</option>
+                                    <option>Seeker</option>
+                                    <option>Company</option>
+                                    <option>Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <table class="table table-hover table-borderless mt-3">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=Hirav+Patel&background=random" class="rounded-circle me-3" width="35">
+                                            <strong>Hirav Patel</strong>
+                                        </div>
+                                    </td>
+                                    <td>hirav@example.com</td>
+                                    <td><span class="badge bg-primary rounded-pill">Seeker</span></td>
+                                    <td>Oct 24, 2026</td>
+                                    <td><span class="text-success"><i class="fa-solid fa-circle text-success" style="font-size: 8px; vertical-align: middle;"></i> Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-light">Block</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=Acme+Corp&background=random" class="rounded-circle me-3" width="35">
+                                            <strong>Acme Corp</strong>
+                                        </div>
+                                    </td>
+                                    <td>hr@acmecorp.com</td>
+                                    <td><span class="badge bg-secondary rounded-pill">Company</span></td>
+                                    <td>Nov 12, 2026</td>
+                                    <td><span class="text-success"><i class="fa-solid fa-circle text-success" style="font-size: 8px; vertical-align: middle;"></i> Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-light">Block</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOCIAL FLOW SECTION -->
+        <div id="social-flow" class="ui-section">
+            <div class="content-card">
+                <div class="content-header">
+                    <h5>Social Creation + Triggered Notifications</h5>
+                    <span class="badge bg-info-subtle text-info">/api/social/*</span>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="line-title">Action to Notification Mapping</div>
+                        <table class="table table-hover table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Created Type</th>
+                                    <th>Recipient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Follow user</td>
+                                    <td><span class="notif-pill notif-follow">FOLLOW</span></td>
+                                    <td>Followed user</td>
+                                </tr>
+                                <tr>
+                                    <td>Create post</td>
+                                    <td><span class="notif-pill notif-post">NEW_POST</span></td>
+                                    <td>All followers</td>
+                                </tr>
+                                <tr>
+                                    <td>Like post</td>
+                                    <td><span class="notif-pill notif-like">POST_LIKED</span></td>
+                                    <td>Post author</td>
+                                </tr>
+                                <tr>
+                                    <td>Comment on post</td>
+                                    <td><span class="notif-pill notif-comment">POST_COMMENTED</span></td>
+                                    <td>Post author</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="line-title">Runtime Event Chain</div>
+                        <div class="flow-step">
+                            <h6>API hits SocialController</h6>
+                            <p>Example: `POST /api/social/posts/{postId}/comment`</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>SocialUseCases executes action</h6>
+                            <p>Core action saves follow/post/like/comment first.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>NotificationUseCases enqueues records</h6>
+                            <p>Creates `PENDING` entries in `Notification` collection.</p>
+                        </div>
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="flow-step">
+                            <h6>Cron worker delivers + updates status</h6>
+                            <p>`PENDING` -> `SENT` or `FAILED`.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="line-title">Social Endpoints in Prototype</div>
+                <div class="chip"><i class="fa-solid fa-rss"></i> GET /api/social/feed</div>
+                <div class="chip"><i class="fa-solid fa-globe"></i> GET /api/social/feed/global</div>
+                <div class="chip"><i class="fa-solid fa-user-plus"></i> POST /api/social/follow/{userId}</div>
+                <div class="chip"><i class="fa-solid fa-user-minus"></i> POST /api/social/unfollow/{userId}</div>
+                <div class="chip"><i class="fa-solid fa-users"></i> GET /api/social/followers/{userId}</div>
+                <div class="chip"><i class="fa-solid fa-paper-plane"></i> POST /api/social/posts</div>
+                <div class="chip"><i class="fa-solid fa-heart"></i> POST /api/social/posts/{postId}/like</div>
+                <div class="chip"><i class="fa-solid fa-comment"></i> POST /api/social/posts/{postId}/comment</div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS SECTION -->
+        <div id="notifications-view" class="ui-section">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h5>Notification Inbox View</h5>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-light rounded-pill">Unread only</button>
+                                <button class="btn btn-sm btn-primary rounded-pill">Mark all as read</button>
+                            </div>
+                        </div>
+                        <table class="table table-hover table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Read</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="notif-pill notif-follow">FOLLOW</span></td>
+                                    <td>Sarah started following you.</td>
+                                    <td><span class="notif-pill state-sent">SENT</span></td>
+                                    <td><span class="text-danger fw-semibold">No</span></td>
+                                    <td>2 min ago</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="notif-pill notif-post">NEW_POST</span></td>
+                                    <td>Acme Corp published a new job update post.</td>
+                                    <td><span class="notif-pill state-sent">SENT</span></td>
+                                    <td><span class="text-success fw-semibold">Yes</span></td>
+                                    <td>15 min ago</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="notif-pill notif-like">POST_LIKED</span></td>
+                                    <td>Mike liked your post.</td>
+                                    <td><span class="notif-pill state-pending">PENDING</span></td>
+                                    <td><span class="text-danger fw-semibold">No</span></td>
+                                    <td>Just now</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="notif-pill notif-comment">POST_COMMENTED</span></td>
+                                    <td>Comment delivery failed due to channel timeout.</td>
+                                    <td><span class="notif-pill state-failed">FAILED</span></td>
+                                    <td><span class="text-danger fw-semibold">No</span></td>
+                                    <td>30 min ago</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="content-card">
+                        <div class="line-title">Cron Delivery Worker</div>
+                        <div class="flow-step">
+                            <h6>Interval</h6>
+                            <p>`NOTIFICATION_CRON_INTERVAL_MS` (default 60000)</p>
+                        </div>
+                        <div class="flow-step">
+                            <h6>Batch Size</h6>
+                            <p>`NOTIFICATION_CRON_BATCH_SIZE` (default 100)</p>
+                        </div>
+                        <div class="flow-step">
+                            <h6>Queue Handling</h6>
+                            <p>Fetch pending -> attempt deliver -> mark SENT/FAILED.</p>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="line-title">Notification APIs</div>
+                        <div class="chip"><i class="fa-solid fa-inbox"></i> GET /api/notifications</div>
+                        <div class="chip"><i class="fa-solid fa-hashtag"></i> GET /api/notifications/unread-count</div>
+                        <div class="chip"><i class="fa-solid fa-check-double"></i> PATCH /api/notifications/read-all</div>
+                        <div class="chip"><i class="fa-solid fa-check"></i> PATCH /api/notifications/{notificationId}/read</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODEL + API MAP SECTION -->
+        <div id="model-map" class="ui-section">
+            <div class="content-card">
+                <div class="content-header">
+                    <h5>Model Map: How Data Is Created Across Roles</h5>
+                    <span class="badge bg-dark-subtle text-dark">Prisma + API Contracts</span>
+                </div>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Created By</th>
+                            <th>Main API Trigger</th>
+                            <th>Admin Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>User</strong> (+ role)</td>
+                            <td>Auth module / Admin seeder</td>
+                            <td>`POST /api/auth/register/*` + startup seeder</td>
+                            <td>Admin can block/unblock and filter by role</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Job</strong></td>
+                            <td>Company</td>
+                            <td>`POST /api/company/jobs`</td>
+                            <td>Admin approves/rejects before live visibility</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Application</strong></td>
+                            <td>Seeker</td>
+                            <td>`POST /api/seeker/jobs/{jobId}/apply`</td>
+                            <td>Company updates status, admin can audit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Follow / Post / Like / Comment</strong></td>
+                            <td>Seeker/Company users</td>
+                            <td>`/api/social/*`</td>
+                            <td>Drives engagement events and notifications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Notification</strong></td>
+                            <td>System via SocialUseCases</td>
+                            <td>Auto-created from social events</td>
+                            <td>Cron updates delivery status for monitoring</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-card">
+                <div class="line-title">Role Access Summary</div>
+                <div class="row">
+                    <div class="col-lg-4 mb-3">
+                        <div class="role-card">
+                            <h6>Seeker</h6>
+                            <p class="mb-2">Profile management, job search/apply, social interactions, inbox notifications.</p>
+                            <span class="chip">SEEKER JWT</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <div class="role-card">
+                            <h6>Company</h6>
+                            <p class="mb-2">Company profile, job posting, applicant review, social posting.</p>
+                            <span class="chip">COMPANY JWT</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <div class="role-card">
+                            <h6>Admin</h6>
+                            <p class="mb-2">System moderation, user control, job approvals, seeded secure access.</p>
+                            <span class="chip">ADMIN JWT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEEKER PROFILE PROTOTYPE -->
+        <div id="seeker-profile" class="ui-section">
+            <div class="content-card p-0 overflow-hidden">
+                <div class="profile-header">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&size=200&background=random" class="profile-avatar" alt="Profile">
+                </div>
+                <div class="profile-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="fw-bold mb-1">John Doe</h3>
+                            <p class="text-muted"><i class="fa-solid fa-location-dot me-2"></i>New York, USA • 5 Years Experience</p>
+                        </div>
+                        <button class="btn btn-outline-primary rounded-pill px-4"><i class="fa-solid fa-pen me-2"></i>Edit Profile</button>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <h6 class="fw-bold text-uppercase text-muted mb-3" style="font-size: 12px; letter-spacing: 1px;">About Me</h6>
+                            <p class="text-dark" style="line-height: 1.8;">Experienced software engineer specializing in frontend development with React and TypeScript. Passionate about building highly scalable and performant web applications with intuitive UI/UX design.</p>
+                            
+                            <h6 class="fw-bold text-uppercase text-muted mb-3 mt-4" style="font-size: 12px; letter-spacing: 1px;">Skills</h6>
+                            <div>
+                                <span class="skill-tag">React.js</span>
+                                <span class="skill-tag">TypeScript</span>
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">Next.js</span>
+                                <span class="skill-tag">MongoDB</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-4 rounded-4">
+                                <h6 class="fw-bold text-uppercase text-muted mb-3" style="font-size: 12px; letter-spacing: 1px;">Contact Info</h6>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Email</small>
+                                    <strong>john.doe@example.com</strong>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Phone</small>
+                                    <strong>+1 (555) 123-4567</strong>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Links</small>
+                                    <a href="#" class="btn btn-sm btn-dark rounded-circle me-1"><i class="fa-brands fa-github"></i></a>
+                                    <a href="#" class="btn btn-sm btn-primary rounded-circle"><i class="fa-brands fa-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h5 class="fw-bold my-4">My Applications</h5>
+            <div class="content-card">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Job</th>
+                            <th>Company</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Senior Frontend Developer</strong></td>
+                            <td>Acme Corp</td>
+                            <td>Oct 20, 2026</td>
+                            <td><span class="badge-status badge-active">Interview</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>React Engineer</strong></td>
+                            <td>TechFlow</td>
+                            <td>Oct 15, 2026</td>
+                            <td><span class="badge-status badge-rejected">Rejected</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- COMPANY PROFILE PROTOTYPE -->
+        <div id="company-profile" class="ui-section">
+            <div class="content-card p-0 overflow-hidden">
+                <div class="profile-header" style="background: linear-gradient(135deg, #111, #333);">
+                    <img src="https://ui-avatars.com/api/?name=AC&size=200&background=fff&color=111" class="profile-avatar" style="border-radius: 16px;" alt="Logo">
+                </div>
+                <div class="profile-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="fw-bold mb-1">Acme Corporation</h3>
+                            <p class="text-muted"><i class="fa-solid fa-location-dot me-2"></i>San Francisco, CA • Information Technology • 500-1000 Employees</p>
+                        </div>
+                        <button class="btn btn-primary rounded-pill px-4"><i class="fa-solid fa-plus me-2"></i>Post a Job</button>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <h6 class="fw-bold text-uppercase text-muted mb-3" style="font-size: 12px; letter-spacing: 1px;">Company Description</h6>
+                            <p class="text-dark" style="line-height: 1.8;">Acme Corp is a leading technology provider focusing on innovative cloud solutions. We are driven by a mission to enhance digital experiences globally. Our team thrives in an inclusive, fast-paced environment.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-4 rounded-4">
+                                <h6 class="fw-bold text-uppercase text-muted mb-3" style="font-size: 12px; letter-spacing: 1px;">Contact Info</h6>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Website</small>
+                                    <a href="#" class="text-decoration-none fw-bold">https://acme.corp</a>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Contact Number</small>
+                                    <strong>+1 (800) 999-0000</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold my-4">Active Job Postings</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="content-card border border-light">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="fw-bold">Senior Frontend Developer</h5>
+                            <span class="badge-status badge-active">Active</span>
+                        </div>
+                        <p class="text-muted mt-2"><i class="fa-solid fa-location-dot me-2"></i>Remote • Full-Time • $100k - $130k</p>
+                        <div class="mt-3">
+                            <span class="skill-tag text-bg-light text-muted">React</span>
+                            <span class="skill-tag text-bg-light text-muted">TypeScript</span>
+                        </div>
+                        <hr class="text-muted">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">12 Applications</span>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3">View Applicants</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Switch Tab Logic -->
+    <script>
+        function switchTab(tabId, el) {
+            // Remove active class from all sidebar links
+            document.querySelectorAll('#sidebar .components li').forEach(li => {
+                li.classList.remove('active');
+            });
+            // Add active class to clicked link
+            el.classList.add('active');
+
+            // Hide all sections
+            document.querySelectorAll('.ui-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show targeted section
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+    
+    <!-- Bootstrap JS API -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setupSeekerRoutes = void 0;
+const express_1 = require("express");
+const multer_1 = __importDefault(require("multer"));
+const SeekerController_1 = require("../controllers/SeekerController");
+const SeekerUseCases_1 = require("../../application/use-cases/SeekerUseCases");
+const PrismaUserRepository_1 = require("../../infrastructure/database/PrismaUserRepository");
+const PrismaJobRepository_1 = require("../../infrastructure/database/PrismaJobRepository");
+const PrismaApplicationRepository_1 = require("../../infrastructure/database/PrismaApplicationRepository");
+const UploadService_1 = require("../../infrastructure/services/UploadService");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const roleMiddleware_1 = require("../middlewares/roleMiddleware");
+const AuthService_1 = require("../../infrastructure/services/AuthService");
+const client_1 = require("@prisma/client");
+const router = (0, express_1.Router)();
+const upload = (0, multer_1.default)({ dest: 'uploads/' }); // Simple setup for local uploads
+const setupSeekerRoutes = () => {
+    const userRepository = new PrismaUserRepository_1.PrismaUserRepository();
+    const jobRepository = new PrismaJobRepository_1.PrismaJobRepository();
+    const appRepository = new PrismaApplicationRepository_1.PrismaApplicationRepository();
+    const uploadService = new UploadService_1.UploadService();
+    const authService = new AuthService_1.AuthService();
+    const useCases = new SeekerUseCases_1.SeekerUseCases(userRepository, jobRepository, appRepository, uploadService);
+    const controller = new SeekerController_1.SeekerController(useCases);
+    const authMiddleware = (0, authMiddleware_1.authGuard)(authService);
+    const seekerOnly = (0, roleMiddleware_1.roleGuard)([client_1.Role.SEEKER]);
+    router.use(authMiddleware);
+    router.use(seekerOnly);
+    router.get('/profile', controller.getProfile);
+    router.put('/profile', controller.updateProfile);
+    router.post('/profile/photo', upload.single('photo'), controller.uploadPhoto);
+    router.get('/jobs', controller.searchJobs);
+    router.post('/jobs/:jobId/apply', upload.single('resume'), controller.applyForJob);
+    router.get('/applications', controller.getMyApplications);
+    return router;
+};
+exports.setupSeekerRoutes = setupSeekerRoutes;

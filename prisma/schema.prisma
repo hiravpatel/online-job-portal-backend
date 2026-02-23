@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SEEKER
+  COMPANY
+  ADMIN
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  INTERVIEW
+  REJECTED
+  HIRED
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+enum WorkplaceType {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+enum NotificationType {
+  FOLLOW
+  NEW_POST
+  POST_LIKED
+  POST_COMMENTED
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  email          String          @unique
+  password       String
+  role           Role            @default(SEEKER)
+  isVerified     Boolean         @default(false)
+  isBlocked      Boolean         @default(false) // Admin can block
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  seekerProfile  SeekerProfile?
+  companyProfile CompanyProfile?
+  applications   Application[]
+
+  // Social relations
+  followers      Follow[]  @relation("FollowerRelation")
+  following      Follow[]  @relation("FollowingRelation")
+  posts          Post[]
+  likes          Like[]
+  comments       Comment[]
+  notifications  Notification[] @relation("NotificationRecipient")
+  actions        Notification[] @relation("NotificationActor")
+}
+
+model SeekerProfile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  firstName   String
+  lastName    String
+  skills      String[]
+  experience  Int      @default(0) // in years
+  education   String?
+  photoUrl    String?
+  resumeUrl   String?
+  linkedinUrl String?
+  githubUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CompanyProfile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  companyName String
+  logoUrl     String?
+  description String?
+  website     String?
+  location    String
+  industry    String
+  size        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs        Job[]
+}
+
+model Job {
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  companyId          String          @db.ObjectId
+  title              String
+  description        String
+  requirements       String
+  skillsRequired     String[]
+  salaryRange        String?
+  location           String
+  jobType            JobType         @default(FULL_TIME)
+  workplaceType      WorkplaceType   @default(ONSITE)
+  experienceLevel    String
+  applicationDeadline DateTime?
+  isActive           Boolean         @default(true)
+  isApproved         Boolean         @default(false) // Admin approval
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  company            CompanyProfile  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications       Application[]
+}
+
+model Application {
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  jobId         String            @db.ObjectId
+  seekerId      String            @db.ObjectId
+  resumeUrl     String?
+  coverLetter   String?
+  status        ApplicationStatus @default(APPLIED)
+  appliedAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  seeker        User              @relation(fields: [seekerId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, seekerId])
+}
+
+// -----------------------------------------
+// Social Features Models
+// -----------------------------------------
+
+model Follow {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  followerId  String   @db.ObjectId
+  followingId String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  follower    User     @relation("FollowerRelation", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("FollowingRelation", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+model Post {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  authorId    String   @db.ObjectId
+  content     String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes       Like[]
+  comments    Comment[]
+}
+
+model Like {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  userId    String   @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  recipientId   String             @db.ObjectId
+  actorId       String?            @db.ObjectId
+  type          NotificationType
+  title         String
+  message       String
+  entityType    String?
+  entityId      String?
+  isRead        Boolean            @default(false)
+  readAt        DateTime?
+  status        NotificationStatus @default(PENDING)
+  deliveryError String?
+  sentAt        DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  recipient     User               @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actor         User?              @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([recipientId, createdAt])
+  @@index([recipientId, isRead])
+  @@index([status, createdAt])
+}
