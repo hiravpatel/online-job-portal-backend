@@ -1,19 +1,17 @@
 import { Router } from 'express';
 import { NotificationController } from '../controllers/NotificationController';
-import { NotificationUseCases } from '../../application/use-cases/NotificationUseCases';
+import { NotificationService } from '../../application/services/NotificationService';
 import { NotificationRepository } from '../../domain/repositories/NotificationRepository';
 import { authGuard } from '../middlewares/authMiddleware';
 import { AuthService } from '../../infrastructure/services/AuthService';
 
+import { container } from '../../infrastructure/di/container';
+
 const router = Router();
 
 export const setupNotificationRoutes = () => {
-    const notificationRepository = new NotificationRepository();
-    const notificationUseCases = new NotificationUseCases(notificationRepository);
-    const notificationController = new NotificationController(notificationUseCases);
-
-    const authService = new AuthService();
-    const requireAuth = authGuard(authService);
+    const notificationController = container.notificationController;
+    const requireAuth = authGuard(container.externalAuthService);
 
     router.use(requireAuth);
 

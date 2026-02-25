@@ -3,7 +3,7 @@ import {
     NotificationTypeValue
 } from '../../domain/repositories/NotificationRepository';
 
-export class NotificationUseCases {
+export class NotificationService {
     constructor(private notificationRepository: NotificationRepository) { }
 
     async notifyUser(input: {

@@ -1,11 +1,11 @@
-import { NotificationUseCases } from '../../application/use-cases/NotificationUseCases';
+import { NotificationService } from '../../application/services/NotificationService';
 
 export class NotificationCronService {
     private intervalRef: NodeJS.Timeout | null = null;
     private processing = false;
 
     constructor(
-        private notificationUseCases: NotificationUseCases,
+        private notificationService: NotificationService,
         private intervalMs: number = 60_000,
         private batchSize: number = 100
     ) { }
@@ -22,7 +22,7 @@ export class NotificationCronService {
 
             this.processing = true;
             try {
-                const result = await this.notificationUseCases.processPendingNotifications(this.batchSize);
+                const result = await this.notificationService.processPendingNotifications(this.batchSize);
                 if (result.processed > 0 || result.failed > 0) {
                     console.log(
                         `[NotificationCron] processed=${result.processed} failed=${result.failed}`

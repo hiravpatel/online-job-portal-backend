@@ -3,8 +3,9 @@ import { JobRepository } from '../../domain/repositories/JobRepository';
 import { ApplicationRepository } from '../../domain/repositories/ApplicationRepository';
 import { IUploadService } from '../interfaces/IUploadService';
 import { ApplicationStatus } from '@prisma/client';
+import { NotFoundError } from '../../domain/errors/CustomErrors';
 
-export class CompanyUseCases {
+export class CompanyService {
     constructor(
         private userRepository: UserRepository,
         private jobRepository: JobRepository,
@@ -14,7 +15,7 @@ export class CompanyUseCases {
 
     async getProfile(userId: string) {
         const profile = await this.userRepository.getCompanyProfile(userId);
-        if (!profile) throw new Error('Company profile not found');
+        if (!profile) throw new NotFoundError('Company profile not found');
         return profile;
     }
 

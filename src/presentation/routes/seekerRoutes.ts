@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { SeekerController } from '../controllers/SeekerController';
-import { SeekerUseCases } from '../../application/use-cases/SeekerUseCases';
+import { SeekerService } from '../../application/services/SeekerService';
 import { PrismaUserRepository } from '../../infrastructure/database/PrismaUserRepository';
 import { PrismaJobRepository } from '../../infrastructure/database/PrismaJobRepository';
 import { PrismaApplicationRepository } from '../../infrastructure/database/PrismaApplicationRepository';
@@ -10,21 +10,15 @@ import { authGuard } from '../middlewares/authMiddleware';
 import { roleGuard } from '../middlewares/roleMiddleware';
 import { AuthService } from '../../infrastructure/services/AuthService';
 import { Role } from '@prisma/client';
-
-const router = Router();
-const upload = multer({ dest: 'uploads/' }); // Simple setup for local uploads
+import { container } from '../../infrastructure/di/container';
 
 export const setupSeekerRoutes = () => {
-    const userRepository = new PrismaUserRepository();
-    const jobRepository = new PrismaJobRepository();
-    const appRepository = new PrismaApplicationRepository();
-    const uploadService = new CloudinaryService();
-    const authService = new AuthService();
+    const router = Router();
+    const upload = multer({ dest: 'uploads/' }); // Simple setup for local uploads
 
-    const useCases = new SeekerUseCases(userRepository, jobRepository, appRepository, uploadService);
-    const controller = new SeekerController(useCases);
+    const controller = container.seekerController;
 
-    const authMiddleware = authGuard(authService);
+    const authMiddleware = authGuard(container.externalAuthService);
     const seekerOnly = roleGuard([Role.SEEKER]);
 
     router.use(authMiddleware);

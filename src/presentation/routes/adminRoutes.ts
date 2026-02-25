@@ -1,24 +1,20 @@
 import { Router } from 'express';
 import { AdminController } from '../controllers/AdminController';
-import { AdminUseCases } from '../../application/use-cases/AdminUseCases';
+import { AdminService } from '../../application/services/AdminService';
 import { PrismaUserRepository } from '../../infrastructure/database/PrismaUserRepository';
 import { PrismaJobRepository } from '../../infrastructure/database/PrismaJobRepository';
 import { authGuard } from '../middlewares/authMiddleware';
 import { roleGuard } from '../middlewares/roleMiddleware';
 import { AuthService } from '../../infrastructure/services/AuthService';
 import { Role } from '@prisma/client';
+import { container } from '../../infrastructure/di/container';
 
 const router = Router();
 
 export const setupAdminRoutes = () => {
-    const userRepository = new PrismaUserRepository();
-    const jobRepository = new PrismaJobRepository();
-    const authService = new AuthService();
+    const controller = container.adminController;
 
-    const useCases = new AdminUseCases(userRepository, jobRepository);
-    const controller = new AdminController(useCases);
-
-    const authMiddleware = authGuard(authService);
+    const authMiddleware = authGuard(container.externalAuthService);
     const adminOnly = roleGuard([Role.ADMIN]);
 
     router.use(authMiddleware);
@@ -30,6 +26,10 @@ export const setupAdminRoutes = () => {
     router.get('/jobs/pending', controller.getPendingJobs);
     router.put('/jobs/:jobId/approve', controller.approveJob);
     router.put('/jobs/:jobId/reject', controller.rejectJob);
+
+    router.get('/companies', controller.getAllCompanies);
+    router.get('/companies/pending', controller.getPendingCompanies);
+    router.put('/company/:userId/approve', controller.approveCompany);
 
     return router;
 };

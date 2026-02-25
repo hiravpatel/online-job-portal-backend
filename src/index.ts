@@ -2,7 +2,7 @@ import app from './presentation/app';
 import dotenv from 'dotenv';
 import { prisma } from './infrastructure/database/prisma';
 import { NotificationRepository } from './domain/repositories/NotificationRepository';
-import { NotificationUseCases } from './application/use-cases/NotificationUseCases';
+import { NotificationService } from './application/services/NotificationService';
 import { NotificationCronService } from './infrastructure/services/NotificationCronService';
 import { seedAdminUser } from './infrastructure/database/adminSeeder';
 
@@ -19,9 +19,9 @@ const startServer = async () => {
         await seedAdminUser();
 
         const notificationRepository = new NotificationRepository();
-        const notificationUseCases = new NotificationUseCases(notificationRepository);
+        const notificationService = new NotificationService(notificationRepository);
         notificationCronService = new NotificationCronService(
-            notificationUseCases,
+            notificationService,
             Number(process.env.NOTIFICATION_CRON_INTERVAL_MS || 60_000),
             Number(process.env.NOTIFICATION_CRON_BATCH_SIZE || 100)
         );

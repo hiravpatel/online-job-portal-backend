@@ -10,7 +10,7 @@ const swaggerDocument = {
     },
     servers: [
         {
-            url: 'http://localhost:3000',
+            url: 'http://localhost:3099',
             description: 'Local development server'
         }
     ],
@@ -114,7 +114,8 @@ const swaggerDocument = {
                                     email: { type: 'string' },
                                     password: { type: 'string' },
                                     companyName: { type: 'string' },
-                                    contactNumber: { type: 'string' }
+                                    contactNumber: { type: 'string' },
+                                    industry: { type: 'string' }
                                 }
                             }
                         }
@@ -157,6 +158,65 @@ const swaggerDocument = {
                     },
                     '401': {
                         description: 'Unauthorized',
+                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+                    }
+                }
+            }
+        },
+        '/api/auth/forgot-password': {
+            post: {
+                summary: 'Request Password Reset',
+                tags: ['Auth'],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    email: { type: 'string' }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    '200': {
+                        description: 'Success',
+                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } }
+                    },
+                    '400': {
+                        description: 'Bad Request',
+                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+                    }
+                }
+            }
+        },
+        '/api/auth/reset-password': {
+            post: {
+                summary: 'Reset Password',
+                tags: ['Auth'],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    token: { type: 'string' },
+                                    newPassword: { type: 'string' }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    '200': {
+                        description: 'Success',
+                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } }
+                    },
+                    '400': {
+                        description: 'Bad Request',
                         content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
                     }
                 }
@@ -985,6 +1045,21 @@ const swaggerDocument = {
                 tags: ['Admin'],
                 parameters: [
                     { name: 'jobId', in: 'path', required: true, schema: { type: 'string' } }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Success',
+                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } }
+                    }
+                }
+            }
+        },
+        '/api/admin/company/{userId}/approve': {
+            put: {
+                summary: 'Approve Company Registration',
+                tags: ['Admin'],
+                parameters: [
+                    { name: 'userId', in: 'path', required: true, schema: { type: 'string' } }
                 ],
                 responses: {
                     '200': {
