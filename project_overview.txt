@@ -1,0 +1,88 @@
+# JOB PORTAL BACKEND - PROJECT DOCUMENTATION
+
+## 1. PROJECT OVERVIEW
+This is a comprehensive backend system for a multi-role Job Portal, built with Node.js, Express, and MongoDB using Prisma as the ORM. The project follows "Clean Architecture" principles to ensure scalability and maintainability.
+
+---
+
+## 2. TECHNICAL STACK
+- **Language**: TypeScript
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB (Atlas)
+- **ORM**: Prisma
+- **Auth**: JWT (JSON Web Token) & Bcrypt
+- **Storage**: Cloudinary (for resumes and profile photos)
+- **Documentation**: Swagger UI
+- **Validation**: Zod
+
+---
+
+## 3. ARCHITECTURE (CLEAN ARCHITECTURE)
+The project is divided into four main layers:
+1. **Domain**: Core business logic, interfaces, and entities.
+2. **Application**: Use cases, services, and business rules orchestration.
+3. **Infrastructure**: External implementations (Database, Mail, Storage, Crypto).
+4. **Presentation**: Controllers, Routes, Middlewares, and API Request/Response handling.
+
+---
+
+## 4. USER ROLES & PERMISSIONS
+
+### A. SEEKER (Job Seeker)
+- **Profile**: Manage personal profile, skills, education, and social links.
+- **Jobs**: Search for jobs and apply using uploaded resumes.
+- **Social**: Follow companies/users, create posts, like/comment on posts.
+- **Notifications**: Receive alerts for applications and social interactions.
+
+### B. COMPANY (Employer)
+- **Profile**: Manage company details, logo, and industry info.
+- **Jobs**: Post new job openings (requires admin approval) and manage active listings.
+- **Applications**: View and manage candidate applications (Shortlist, Reject, Hire).
+- **Social**: Build a brand presence through posts and engagement.
+
+### C. ADMIN (System Administrator)
+- **Oversight**: Approve or reject job postings to maintain platform quality.
+- **Moderation**: Block or unblock users/companies if they violate terms.
+- **Monitoring**: Overview of system users and activity.
+
+---
+
+## 5. CORE WORKFLOWS
+
+### Recruitment Workflow
+1. **Job Posting**: Company creates a job -> Status: PENDING (isApproved=false).
+2. **Approval**: Admin reviews and approves -> Status: APPROVED (isApproved=true).
+3. **Application**: Seeker views job and applies -> Application record created (APPLIED).
+4. **Processing**: Company reviews -> Status changes: SHORTLISTED -> INTERVIEW -> HIRED/REJECTED.
+
+### Social & Interaction Workflow
+1. **Following**: Seeker follows a Company.
+2. **Posting**: Company/Seeker creates a Post.
+3. **Fanout**: Followers get a notification about the new post.
+4. **Engagement**: Users Like or Comment on post -> Post owner is notified.
+5. **Worker**: A background cron job processes PENDING notifications for delivery.
+
+---
+
+## 6. DATA MODELS (ENTITY RELATIONSHIPS)
+- **User**: Central auth entity with Role (SEEKER, COMPANY, ADMIN).
+- **SeekerProfile / CompanyProfile**: Extensions of the User model.
+- **Job**: Linked to CompanyProfile; contains requirements and status.
+- **Application**: Join entity between Seeker and Job; tracks status.
+- **Follow**: Tracks Follower and Following relations.
+- **Post / Like / Comment**: Social interaction models.
+- **Notification**: Tracks alerts for users with status (PENDING, SENT, FAILED).
+
+---
+
+## 7. API ENDPOINTS STRUCTURE
+- `/api/auth`: Login, Register, Verification.
+- `/api/seeker`: Seeker profile and application management.
+- `/api/company`: Job posting and candidate management.
+- `/api/admin`: Content moderation and system oversight.
+- `/api/social`: Feed, Likes, Comments, and Following.
+- `/api/notifications`: Inbox and read-status management.
+
+---
+*Documentation generated for development and onboarding references.*

@@ -7,7 +7,7 @@ import { setupAuthRoutes } from './routes/authRoutes';
 import { setupSeekerRoutes } from './routes/seekerRoutes';
 import { setupCompanyRoutes } from './routes/companyRoutes';
 import { setupAdminRoutes } from './routes/adminRoutes';
-import socialRoutes from './routes/socialRoutes';
+import { setupSocialRoutes } from './routes/socialRoutes';
 import { setupNotificationRoutes } from './routes/notificationRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 import { swaggerDocs } from './swagger';
@@ -15,8 +15,11 @@ import { swaggerDocs } from './swagger';
 const app = express();
 
 app.use(helmet());
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+})); app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const limiter = rateLimit({
@@ -34,7 +37,7 @@ app.use('/api/auth', setupAuthRoutes());
 app.use('/api/seeker', setupSeekerRoutes());
 app.use('/api/company', setupCompanyRoutes());
 app.use('/api/admin', setupAdminRoutes());
-app.use('/api/social', socialRoutes);
+app.use('/api/social', setupSocialRoutes());
 app.use('/api/notifications', setupNotificationRoutes());
 
 app.use(errorHandler);

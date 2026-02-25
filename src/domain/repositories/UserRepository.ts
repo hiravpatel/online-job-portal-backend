@@ -7,10 +7,14 @@ export interface UserRepository {
 
     findByEmail(email: string): Promise<User | null>;
     findById(id: string): Promise<User | null>;
+    findByResetPasswordToken(token: string): Promise<User | null>;
+    updateUserResetToken(userId: string, token: string | null, expires: Date | null): Promise<User>;
+    updateUserPasswordAndClearToken(userId: string, hashedPw: string): Promise<User>;
 
     getSeekerProfile(userId: string): Promise<SeekerProfile | null>;
     getCompanyProfile(userId: string): Promise<CompanyProfile | null>;
     getAllCompanies(options?: { skip?: number; take?: number }): Promise<CompanyProfile[]>;
+    getPendingCompanies(options?: { skip?: number; take?: number }): Promise<CompanyProfile[]>;
 
     updateSeekerProfile(userId: string, data: Partial<SeekerProfile>): Promise<SeekerProfile>;
     updateCompanyProfile(userId: string, data: Partial<CompanyProfile>): Promise<CompanyProfile>;

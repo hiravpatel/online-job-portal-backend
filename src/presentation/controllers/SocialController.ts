@@ -1,10 +1,10 @@
 import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
-import { SocialUseCases } from '../../application/use-cases/SocialUseCases';
+import { SocialService } from '../../application/services/SocialService';
 import { ApiResponse } from '../utils/ApiResponse';
 
 export class SocialController {
-    constructor(private socialUseCases: SocialUseCases) { }
+    constructor(private socialService: SocialService) { }
 
     // ------------------------------------------------------------------------
     // FOLLOW SYSTEM
@@ -15,7 +15,7 @@ export class SocialController {
             const followerId = req.user!.id; // Current user
             const followingId = req.params.userId as string; // User to follow
 
-            const result = await this.socialUseCases.followUser(followerId, followingId);
+            const result = await this.socialService.followUser(followerId, followingId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -27,7 +27,7 @@ export class SocialController {
             const followerId = req.user!.id; // Current user
             const followingId = req.params.userId as string; // User to unfollow
 
-            const result = await this.socialUseCases.unfollowUser(followerId, followingId);
+            const result = await this.socialService.unfollowUser(followerId, followingId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -37,7 +37,7 @@ export class SocialController {
     getFollowers = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
             const userId = (req.params.userId as string) || req.user!.id;
-            const followers = await this.socialUseCases.getFollowers(userId);
+            const followers = await this.socialService.getFollowers(userId);
             res.status(200).json(ApiResponse.success(followers));
         } catch (error) {
             next(error);
@@ -47,7 +47,7 @@ export class SocialController {
     getFollowing = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
             const userId = (req.params.userId as string) || req.user!.id;
-            const following = await this.socialUseCases.getFollowing(userId);
+            const following = await this.socialService.getFollowing(userId);
             res.status(200).json(ApiResponse.success(following));
         } catch (error) {
             next(error);
@@ -68,7 +68,7 @@ export class SocialController {
                 return res.status(400).json(ApiResponse.error('Post content or image is required', 400));
             }
 
-            const post = await this.socialUseCases.createPost(authorId, content, file);
+            const post = await this.socialService.createPost(authorId, content, file);
             res.status(201).json(ApiResponse.created(post, 'Post created successfully'));
         } catch (error) {
             next(error);
@@ -78,7 +78,7 @@ export class SocialController {
     getPostById = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
             const postId = req.params.postId as string;
-            const post = await this.socialUseCases.getPostById(postId);
+            const post = await this.socialService.getPostById(postId);
             res.status(200).json(ApiResponse.success(post));
         } catch (error) {
             next(error);
@@ -89,7 +89,7 @@ export class SocialController {
         try {
             const postId = req.params.postId as string;
             const authorId = req.user!.id;
-            const result = await this.socialUseCases.deletePost(postId, authorId);
+            const result = await this.socialService.deletePost(postId, authorId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -104,7 +104,7 @@ export class SocialController {
         try {
             const userId = req.user!.id;
             const postId = req.params.postId as string;
-            const result = await this.socialUseCases.likePost(userId, postId);
+            const result = await this.socialService.likePost(userId, postId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -115,7 +115,7 @@ export class SocialController {
         try {
             const userId = req.user!.id;
             const postId = req.params.postId as string;
-            const result = await this.socialUseCases.unlikePost(userId, postId);
+            const result = await this.socialService.unlikePost(userId, postId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -132,7 +132,7 @@ export class SocialController {
                 return res.status(400).json(ApiResponse.error('Comment content is required', 400));
             }
 
-            const comment = await this.socialUseCases.addComment(userId, postId, content);
+            const comment = await this.socialService.addComment(userId, postId, content);
             res.status(201).json(ApiResponse.created(comment, 'Comment added successfully'));
         } catch (error) {
             next(error);
@@ -143,7 +143,7 @@ export class SocialController {
         try {
             const userId = req.user!.id;
             const commentId = req.params.commentId as string;
-            const result = await this.socialUseCases.deleteComment(commentId, userId);
+            const result = await this.socialService.deleteComment(commentId, userId);
             res.status(200).json(ApiResponse.success(result));
         } catch (error) {
             next(error);
@@ -158,7 +158,7 @@ export class SocialController {
         try {
             const userId = req.user!.id;
             const { page, limit } = req.query;
-            const feed = await this.socialUseCases.getFeed(
+            const feed = await this.socialService.getFeed(
                 userId,
                 page ? parseInt(page as string) : 1,
                 limit ? parseInt(limit as string) : 20
@@ -172,7 +172,7 @@ export class SocialController {
     getGlobalFeed = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
             const { page, limit } = req.query;
-            const feed = await this.socialUseCases.getGlobalFeed(
+            const feed = await this.socialService.getGlobalFeed(
                 page ? parseInt(page as string) : 1,
                 limit ? parseInt(limit as string) : 20
             );

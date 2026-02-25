@@ -2,8 +2,9 @@ import { UserRepository } from '../../domain/repositories/UserRepository';
 import { JobRepository } from '../../domain/repositories/JobRepository';
 import { ApplicationRepository } from '../../domain/repositories/ApplicationRepository';
 import { IUploadService } from '../interfaces/IUploadService';
+import { NotFoundError, BadRequestError } from '../../domain/errors/CustomErrors';
 
-export class SeekerUseCases {
+export class SeekerService {
     constructor(
         private userRepository: UserRepository,
         private jobRepository: JobRepository,
@@ -13,7 +14,7 @@ export class SeekerUseCases {
 
     async getProfile(userId: string) {
         const profile = await this.userRepository.getSeekerProfile(userId);
-        if (!profile) throw new Error('Profile not found');
+        if (!profile) throw new NotFoundError('Profile not found');
         return profile;
     }
 
@@ -36,10 +37,10 @@ export class SeekerUseCases {
 
     async applyForJob(seekerId: string, jobId: string, coverLetter?: string, resumeFile?: any) {
         const job = await this.jobRepository.getJobById(jobId);
-        if (!job || !job.isActive || !job.isApproved) throw new Error('Job is not available for applying');
+        if (!job || !job.isActive || !job.isApproved) throw new BadRequestError('Job is not available for applying');
 
         const hasApplied = await this.applicationRepository.hasSeekerApplied(jobId, seekerId);
-        if (hasApplied) throw new Error('You have already applied for this job');
+        if (hasApplied) throw new BadRequestError('You have already applied for this job');
 
         let resumeUrl = undefined;
         if (resumeFile) {

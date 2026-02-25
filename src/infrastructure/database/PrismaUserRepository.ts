@@ -45,6 +45,31 @@ export class PrismaUserRepository implements UserRepository {
         return await prisma.user.findUnique({ where: { id } });
     }
 
+    async findByResetPasswordToken(token: string): Promise<User | null> {
+        return await prisma.user.findFirst({ where: { resetPasswordToken: token } });
+    }
+
+    async updateUserResetToken(userId: string, token: string | null, expires: Date | null): Promise<User> {
+        return await prisma.user.update({
+            where: { id: userId },
+            data: {
+                resetPasswordToken: token,
+                resetPasswordExpires: expires
+            }
+        });
+    }
+
+    async updateUserPasswordAndClearToken(userId: string, hashedPw: string): Promise<User> {
+        return await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedPw,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+            }
+        });
+    }
+
     async getSeekerProfile(userId: string): Promise<SeekerProfile | null> {
         return await prisma.seekerProfile.findUnique({ where: { userId } });
     }
@@ -92,6 +117,24 @@ export class PrismaUserRepository implements UserRepository {
         return await prisma.companyProfile.findMany({
             skip: options?.skip,
             take: options?.take
+        });
+    }
+
+    async getPendingCompanies(options?: { skip?: number; take?: number }): Promise<CompanyProfile[]> {
+        return await prisma.companyProfile.findMany({
+            where: { isApproved: false },
+            skip: options?.skip,
+            take: options?.take,
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        isBlocked: true,
+                        createdAt: true
+                    }
+                }
+            }
         });
     }
 }
